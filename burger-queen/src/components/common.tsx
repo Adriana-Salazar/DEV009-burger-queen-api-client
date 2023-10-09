@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { menuToggle } from './funcion.js';
-import imgerror404 from '../img/imgerror404.png'
+import React, { useState } from 'react';
+import axios from 'axios';
+//import imgerror404 from '../img/imgerror404.png'
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
-
+import { faTrash, faCheck, faClock } from '@fortawesome/free-solid-svg-icons';
 
 export function BackgroundImage() {
   return (
@@ -13,29 +12,42 @@ export function BackgroundImage() {
   )
 }
 
-export function LoginForm() {
+type OnLoginHandler = (userType: string) => void;
 
-  const [email, setEmail] = useState('');
+
+export function Login({ onLogin }: { onLogin: OnLoginHandler }) {
+  // Estados para gestionar el email y la contraseña
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
 
-
+  // Función para manejar el clic del botón de ingreso
   function handleClick() {
-
-    if (email === '' || password === '') {
-      if (email === '') {
-        alert('Debes llenar el campo email');
-      } else if (password === '') {
-        alert('Debes llenar el campo contraseña');
-      }
-    } else if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-      alert('Verifica el correo electrónico que has introducido.');
-    } else {
-      // Aquí puedes realizar la lógica para el inicio de sesión
-      alert('¡Me hiciste clic!');
-    }
+    console.log('Manejando clic de inicio de sesión');
+    axios.get('https://burger-kg51.onrender.com')
+      .then((response) => {
+        const { admin } = response.data;
+        if (email === '' || password === '') {
+          alert('Debes llenar todos los campos');
+          // Validación si el email o la contraseña están vacíos
+        if (email === '') {
+          alert('Debes llenar el campo email');
+        } else if (password === '') {
+          alert('Debes llenar el campo contraseña');
+        }
+        } else if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+          // Validación si el email no es válido
+          alert('Verifica el correo electrónico que has introducido.');
+        } else if (email === admin.email && password === admin.password) {
+          // Validación si las credenciales coinciden con las del administrador
+          onLogin('admin');
+        } else {
+          // Validación si las credenciales son incorrectas
+          alert('Credenciales incorrectas');
+        }
+      });
   }
 
-
+  // Renderización del componente del formulario de inicio de sesión
   return (
     <div className="form">
       <form>
@@ -44,20 +56,27 @@ export function LoginForm() {
         <h1 className="queen"> Queen </h1>
         <div className="login">
           <label className="label"> Ingresa tu email </label>
-
-          <input type="email" className="email" value={email} onChange={(e) => setEmail(e.target.value)}></input>
-          <label className="label"> Ingresa tu password </label>
-          <input type="password" className="password" value={password}
-            onChange={(e) => setPassword(e.target.value)}></input>
-          <button className="ingreso" onClick={handleClick}> Ingresar </button>
-
+          <input
+            type="email"
+            className="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <label className="label"> Ingresa tu contraseña </label>
+          <input
+            type="password"
+            className="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button className="ingreso" onClick={handleClick}>
+            Ingresar
+          </button>
         </div>
       </form>
     </div>
   );
-
 }
-
 
 // export function LoginForm() {
 //   return (
@@ -78,9 +97,6 @@ export function LoginForm() {
 //   )
 // }
 
-
-
-
 export function TextLogo() {
   return (
     <>
@@ -92,26 +108,22 @@ export function TextLogo() {
   )
 }
 
-export function menuToggle() {
-    const toggleMenu = document.querySelector('.info-perfil');
-    toggleMenu.classList.toggle('active');
-  }
-
-
 export function Profile() {
+  const [isMenuVisible, setMenuVisible] = useState(false);
+  const toggleMenu = () => {
+    setMenuVisible(!isMenuVisible);
+  };
   return (
     <section className="userprofile">
-
-
       <TextLogo />
-
-
-      <div className="perfil" onClick={menuToggle}>
-
+      <div className={`perfil ${isMenuVisible ? 'active' : ''}`} onClick={toggleMenu}>
         <div className="icono">
-          <img src='https://i.pinimg.com/736x/ab/e1/aa/abe1aa8c1d9944fc14f0711051d4b833.jpg' alt="iconperfil" className="iconprofile" />
+          <img
+            src="https://i.pinimg.com/736x/ab/e1/aa/abe1aa8c1d9944fc14f0711051d4b833.jpg"
+            alt="iconperfil"
+            className="iconprofile"
+          />
         </div>
-
         <div className="info-perfil">
           <div className="cargo">Aqui el cargo xd</div>
           <div className="name">Aqui nombre xd</div>
@@ -119,10 +131,8 @@ export function Profile() {
           <div className="cerrar_sesion">Cerrar Sesion</div>
         </div>
       </div>
-
     </section>
-
-  )
+  );
 }
 
 export function Order() {
@@ -134,17 +144,16 @@ export function Order() {
         <button className="menu2"> Resto del día </button>
       </div>
       <div>
-        <input type="text" className="cliente" placeholder="Nombre cliente"></input>
-        <input type="text" className="numorder"></input>
+        <input type="text" className="cliente" placeholder="Nombre del cliente"></input>
+        <input type="text" className="num_order" placeholder='N° Orden'></input>
       </div>
-      <div>
+      <div className='ordenes'>
         <h2 className="orden"> Resúmen de Orden </h2>
       </div>
+      <div className='enviar'>Enviar Orden</div>
     </>
   )
 }
-
-
 
 export function Error404() {
   return (
@@ -157,29 +166,7 @@ export function Error404() {
   )
 }
 
-interface Order {
-  id: number;
-  customerName: string;
-  orderdateEntry: string;
-  customerStatus: string;
-  // Agrega más propiedades según la estructura de tus datos
-}
-
-
-
-export function Tabla() {
-  const [orders, setOrders] = useState<Order[]>([]);
-  useEffect(() => {
-    fetch('https://burger-kg51.onrender.com')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((data: Order[]) => setOrders(data))
-      .catch(error => console.error('Error fetching data:', error));
-},[]);
+export function TablaOrdenMesero() {
   return (
     <>
       <div className='table-responsive'>
@@ -189,19 +176,73 @@ export function Tabla() {
               <th className='style text-center'>N° Orden</th>
               <th className='style text-center'>Cliente</th>
               <th className='style text-center'>Hora de <br></br>pedido</th>
-              <th className='style text-center'>Estado</th>              
+              <th className='style text-center'>Estado</th>
+              <th className='style text-center'>Hora de <br></br>entrega</th>
             </tr>
           </thead>
           <tbody>
-          {orders.map(order => (
-            <tr key={order.id}>
-              <th className='style2 text-center'>{order.id}</th>
-              <td className='style2 text-center'>{order.customerName}</td>
-              <td className='style2 text-center'>{order.orderdateEntry}</td>
-              <td className='style2 text-center'>{order.customerStatus}</td>              
+            <tr>
+              <th className='style2 text-center'>001</th>
+              <td className='style2 text-center'>Ingrid Aybar</td>
+              <td className='style2 text-center'>7:10am</td>
+              <td className='style2 text-center'>Listo</td>
+              <td className='style2 text-center'>7:20am</td>
               <td className='style2 text-center'><FontAwesomeIcon icon={faTrash} style={{ color: "#000000" }} /></td>
             </tr>
-          ))}              
+            <tr>
+              <th className='style2 text-center'>001</th>
+              <td className='style2 text-center'>Ingrid Aybar</td>
+              <td className='style2 text-center'>7:10am</td>
+              <td className='style2 text-center'>Listo</td>
+              <td className='style2 text-center'>7:20am</td>
+              <td className='style2 text-center'><FontAwesomeIcon icon={faTrash} style={{ color: "#000000" }} /></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </>
+  )
+}
+
+export function TablaOrdenCocinero() {
+  return (
+    <>
+      <div className='table-responsive'>
+        <table className=" estilos table table-striped mx-auto">
+          <thead>
+            <tr>
+              <th className='style text-center'>N° Orden</th>
+              <th className='style text-center'>Hora de <br></br>pedido</th>
+              <th className='style text-center'>Estado</th>
+              <th className='style text-center'>Hora de <br></br>entrega</th>
+              <th className='style text-center'>Duración</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th className='style2 text-center'>001</th>
+              <td className='style2 text-center'>7:10am</td>
+              <td className='style2 text-center'>Listo</td>
+              <td className='style2 text-center'>7:20am</td>
+              <td className='style2 text-center'>10 minutos</td>
+              <td className='style2 text-center'><FontAwesomeIcon icon={faCheck} style={{ color: "#000000", }} /></td>
+            </tr>
+            <tr>
+              <th className='style2 text-center'>001</th>
+              <td className='style2 text-center'>7:10am</td>
+              <td className='style2 text-center'>Listo</td>
+              <td className='style2 text-center'>7:20am</td>
+              <td className='style2 text-center'>10 minutos</td>
+              <td className='style2 text-center'><FontAwesomeIcon icon={faCheck} style={{ color: "#000000", }} /></td>
+            </tr>
+            <tr>
+              <th className='style2 text-center'>001</th>
+              <td className='style2 text-center'>7:10am</td>
+              <td className='style2 text-center'>Pendiente</td>
+              <td className='style2 text-center'>7:20am</td>
+              <td className='style2 text-center'>15 minutos</td>
+              <td className='style2 text-center'><FontAwesomeIcon icon={faClock} style={{ color: "#000000", }} /></td>
+            </tr>
           </tbody>
         </table>
       </div>

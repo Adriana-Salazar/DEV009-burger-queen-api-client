@@ -1,14 +1,17 @@
+import '../App.css';
+import { BackgroundImage, Login } from './common';
 
-import '../App.css'
-import { BackgroundImage, LoginForm } from './common';
-//import axios from 'axios';
+function MyApp() {
+  const handleLogin = () => { 
+  };
 
-
-export function MyApp() {
   return (
     <div>
       <BackgroundImage />
-      <LoginForm />
+      <Login onLogin={handleLogin} />
     </div>
   );
 }
+
+export default MyApp;
+
