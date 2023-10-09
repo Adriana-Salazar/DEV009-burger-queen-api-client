@@ -14,40 +14,78 @@ export function BackgroundImage() {
 
 type OnLoginHandler = (userType: string) => void;
 
+interface LoginProps {
+  onLogin: OnLoginHandler;
+}
 
-export function Login({ onLogin }: { onLogin: OnLoginHandler }) {
-  // Estados para gestionar el email y la contraseña
+interface User {
+  email: string;
+  password: string;
+  role: string;
+  id: number;
+}
+
+export function Login({ onLogin }: LoginProps) {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Función para manejar el clic del botón de ingreso
-  function handleClick() {
+  async function handleClick() {
     console.log('Manejando clic de inicio de sesión');
-    axios.get('https://burger-kg51.onrender.com')
-      .then((response) => {
-        const { admin } = response.data;
-        if (email === '' || password === '') {
-          alert('Debes llenar todos los campos');
-          // Validación si el email o la contraseña están vacíos
-        if (email === '') {
-          alert('Debes llenar el campo email');
-        } else if (password === '') {
-          alert('Debes llenar el campo contraseña');
-        }
-        } else if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-          // Validación si el email no es válido
-          alert('Verifica el correo electrónico que has introducido.');
-        } else if (email === admin.email && password === admin.password) {
-          // Validación si las credenciales coinciden con las del administrador
-          onLogin('admin');
+
+    if (email === '' && password === '') {
+      alert('Debes llenar todos los campos');
+      return;
+    } else if (email === '') {
+      alert('Debes llenar el campo de correo electrónico');
+      return;
+    } else if (password === '') {
+      alert('Debes llenar el campo de contraseña');
+      return;
+    } else if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      alert('Verifica el correo electrónico que has introducido.');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Token JWT obtenido durante el inicio de sesión
+      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQHN5c3RlcnMueHl6IiwiaWF0IjoxNjk2ODkzMTc1LCJleHAiOjE2OTY4OTY3NzUsInN1YiI6IjEifQ.4Ie4i_sY9MZzBavIt7fUjWsSKM4bU6jAROA6oq5xoNA'; // Reemplaza 'tu_token_jwt' con el token real
+      const headers = {
+        'Authorization': `Bearer ${token}`
+      };
+  
+      // Realizar la solicitud a un endpoint protegido
+      const response = await fetch('https://burger-queen-mock-9l2y.onrender.com/users', { headers });
+
+      if (!response.ok) {
+        throw new Error('La solicitud no fue exitosa');
+      }
+
+      const users = await response.json();
+      console.log('Respuesta de la API:', users);
+
+      // Buscar el usuario en el arreglo de usuarios con el correo electrónico proporcionado
+      const user: User | undefined = users.find((user: User) => user.email === email);
+
+      if (user) {
+        if (password === user.password) {
+          onLogin(user.role);
         } else {
-          // Validación si las credenciales son incorrectas
           alert('Credenciales incorrectas');
         }
-      });
+      } else {
+        alert('Correo electrónico no encontrado');
+      }
+    } catch (error) {
+      console.error('Error al realizar la solicitud:', error);
+      alert('Error al iniciar sesión');
+    } finally {
+      setIsLoading(false);
+    }
   }
 
-  // Renderización del componente del formulario de inicio de sesión
   return (
     <div className="form">
       <form>
@@ -69,14 +107,15 @@ export function Login({ onLogin }: { onLogin: OnLoginHandler }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button className="ingreso" onClick={handleClick}>
-            Ingresar
+          <button className="ingreso" onClick={handleClick} disabled={isLoading}>
+            {isLoading ? 'Cargando...' : 'Ingresar'}
           </button>
         </div>
       </form>
     </div>
   );
 }
+
 
 // export function LoginForm() {
 //   return (
