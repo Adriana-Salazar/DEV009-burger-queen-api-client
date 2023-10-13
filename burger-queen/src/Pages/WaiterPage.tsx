@@ -1,6 +1,6 @@
 import '../App.css'
-import { Profile, TablaOrdenMesero } from './common';
-
+import { Profile,  } from '../components/common';
+import { TablaOrdenMesero } from '../components/waiter'
 
 function WaiterView() {
   console.log('Renderizando WaiterPage');

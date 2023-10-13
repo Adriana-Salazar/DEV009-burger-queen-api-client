@@ -1,5 +1,5 @@
 import '../App.css'
-import { Error404 } from './common';
+import { Error404 } from '../components/common';
 
 function ManejodeError404() {
   return (

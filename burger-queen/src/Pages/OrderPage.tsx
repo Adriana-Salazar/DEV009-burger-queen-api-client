@@ -1,5 +1,5 @@
 import '../App.css'
-import { Order } from './common'
+import { Order } from '../components/order'
 
 
 function Pedidos () {

@@ -1,9 +1,11 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import React, { useState } from 'react';
-import LoginPage from './components/LoginPage';
-import WaiterPage from './components/WaiterPage';
-import ChefPage from './components/ChefPage';
-import Error404 from './components/Error404';
+import  { useState } from 'react';
+import LoginPage from './Pages/LoginPage';
+import WaiterPage from './Pages/WaiterPage';
+import ChefPage from './Pages/ChefPage';
+import Error404 from './Pages/Error404';
+import OrderPage from './Pages/OrderPage';
+
 //import AdminPage from './components/AdminPage';
 import './App.css'
 
@@ -17,6 +19,7 @@ function App() {
           <Route path="/waiter" element={<WaiterPage />} />
           <Route path="/404" element={<Error404 />} />
           <Route path="/chef" element={<ChefPage token={token} />} />
+          <Route path="/order" element={<OrderPage/>} />
         </Routes>
       </Router>
     )

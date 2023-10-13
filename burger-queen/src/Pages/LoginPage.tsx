@@ -1,5 +1,6 @@
 import '../App.css';
-import { BackgroundImage, Login } from './common';
+import { BackgroundImage,  } from '../components/common';
+import { Login } from '../components/login'
 
 function MyApp() {
   const handleLogin = () => { 
