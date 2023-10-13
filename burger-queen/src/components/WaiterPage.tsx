@@ -3,6 +3,7 @@ import { Profile, TablaOrdenMesero } from './common';
 
 
 function WaiterView() {
+  console.log('Renderizando WaiterPage');
   return (
     <div>
       <Profile />
