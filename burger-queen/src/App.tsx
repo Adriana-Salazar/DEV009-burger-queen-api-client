@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import  { useState } from 'react';
+import { useState } from 'react';
 import LoginPage from './Pages/LoginPage';
 import WaiterPage from './Pages/WaiterPage';
 import ChefPage from './Pages/ChefPage';
@@ -10,16 +10,16 @@ import OrderPage from './Pages/OrderPage';
 import './App.css'
 
 function App() {
-  const [token, setToken] = useState('hola');
   return (
     (
       <Router>
         <Routes>
           <Route path="/" element={<LoginPage />} />
           <Route path="/waiter" element={<WaiterPage />} />
-          <Route path="/404" element={<Error404 />} />
-          <Route path="/chef" element={<ChefPage token={token} />} />
-          <Route path="/order" element={<OrderPage/>} />
+          <Route path="/chef" element={<ChefPage />} />
+          <Route path="/order" element={<OrderPage />} />
+          {/**si pone cualquier ruta que no es nos manda directamente a la pagina de nuestro error 404 */}
+          <Route path="*" element={<Error404 />} />
         </Routes>
       </Router>
     )

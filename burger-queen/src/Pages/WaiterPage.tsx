@@ -1,5 +1,5 @@
 import '../App.css'
-import { Profile,  } from '../components/common';
+import { Profile, } from '../components/common';
 import { TablaOrdenMesero } from '../components/waiter'
 
 function WaiterView() {
