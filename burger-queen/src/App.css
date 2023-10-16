@@ -1,42 +1,360 @@
-#root {
+/* #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+} */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+body {
+  background-color: #F9ECDC !important;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.imagendefondo {
+  width: 100vw;
+  height: 100vh;
+  opacity: 0.75;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.form {
+  width: 628px;
+  height: 755px;
+  background-color: rgba(249, 236, 220, 0.70);
+  border-radius: 25px;
+  position: absolute;
+  left: 650px;
+  top: 94px;
 }
 
-.card {
-  padding: 2em;
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.read-the-docs {
-  color: #888;
+.label {
+  font-size: 30px;
+}
+
+.email,
+.password {
+  width: 350px;
+  height: 50px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  background-color: #FFB730;
+  border-radius: 10px;
+}
+
+.ingreso {
+  width: 200px;
+  height: 50px;
+  margin-top: 45px;
+  background-color: #FFB730;
+  border-radius: 25px;
+  font-size: 25px;
+}
+
+
+/*********ESTILOS PARA LOS LOGOS(EL DEL LA BARRA DE NAVEGACION Y LOGIN)************/
+
+.restro {
+  font-family: 'Italianno', cursive;
+  text-align: center;
+  font-size: 55px;
+  margin-top: 30px;
+}
+
+.burger2,
+.queen2 {
+  font-family: 'Irish Grover', cursive;
+  font-size: 50px;
+  margin-bottom: -20px;
+}
+
+.burger,
+.queen {
+  font-family: 'Irish Grover', cursive;
+  text-align: center;
+  font-size: 80px;
+}
+
+.burger,
+.burger2 {
+  color: #EE9D05;
+}
+
+.burger2,
+.queen2 {
+  font-family: 'Irish Grover', cursive;
+  font-size: 50px;
+  margin-bottom: -20px;
+}
+
+.queen {
+  margin-top: -35px;
+  margin-bottom: 30px;
+}
+
+
+
+/********BARRA DE NAVEGACION********/
+.userprofile {
+  width: 100vw;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 7fr 1fr;
+  height: 120px;
+}
+
+/*********************** PERFIL DE USUARIO ************************/
+.perfil {
+  margin: auto;
+  position: relative;
+}
+
+.icono {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  margin: auto;
+}
+
+.iconprofile {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  margin: 0 auto;
+}
+
+.text {
+  margin-top: 12px;
+  margin-left: 50px;
+}
+
+
+.info-perfil {
+  position: absolute;
+  top: 120px;
+  right: -5px;
+  padding: 10px 20px;
+  background-color: #fff;
+  width: 200px;
+  border-radius: 15px;
+  transition: 0.5s;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.perfil.active .info-perfil {
+  top: 100px;
+  visibility: visible;
+  opacity: 1;
+}
+
+.info-perfil::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: 28px;
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  transform: rotate(45deg);
+}
+
+.name,
+.irapedidos,
+.cargo {
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  color: #000;
+}
+
+.irapedidos:hover,
+.cerrar_sesion:hover {
+  background-color: #f8f2dc;
+}
+
+.irapedidos {
+  cursor: pointer;
+}
+
+.cerrar_sesion {
+  display: flex;
+  cursor: pointer;
+  color: #000;
+  justify-content: center;
+  margin: 5px;
+  font-size: 18px;
+}
+
+.cerrar_sesion i {
+  border-radius: 50%;
+  background-color: #BB377D;
+  color: #fff;
+  padding: 8px;
+  margin-right: 5px;
+}
+
+/***********  PAGINA DE ERROR 404  ****************/
+
+.conteinererror404 {
+  width: 800px;
+  height: 800px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: auto;
+}
+
+.imgerror404 {
+  width: 60%;
+  height: 60%;
+}
+
+.msgerror404 {
+  font-size: 3em;
+}
+
+
+/*******************ESTILOS DE LA TABLA DEL MESERO*********************/
+
+.estilos {
+  width: 1200px !important;
+  --bs-table-bg: #F9ECDC !important;
+  margin-top: 30px;
+}
+
+.table {
+  border-collapse: separate;
+  /* Usar border-collapse: separate; en lugar de collapse */
+}
+
+.style {
+  font-size: 1.5em !important;
+}
+
+.style2 {
+  font-size: 1.5em !important;
+}
+
+/************  ESTILOS DE LA PAGINA DE PEDIDOS DEL MESERO  *****************/
+
+.menu-container {
+  position: relative;
+}
+
+.menu1,
+.menu2 {
+  width: 300px;
+  height: 110px;
+  background-color: #FFB730;
+  border-radius: 25px;
+  font-size: 48px;
+  font-family: 'Irish Grover', cursive;
+  position: absolute;
+  top: 95px;
+}
+
+.menu1:hover,
+.menu2:hover {
+  background-color: #FCDCA4;
+}
+
+.cerrar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #EE9D05;
+  border: 3px solid #000;
+  font-size: 1.6em;
+  position: absolute;
+  top: 20px;
+  left: 1400px;
+}
+
+.menu1 {
+  left: 700px;
+}
+
+.menu2 {
+  left: 1040px;
+}
+
+.cliente {
+  width: 340px;
+  height: 64px;
+  position: absolute;
+  font-size: 1.6em;
+  top: 130px;
+  left: 90px;
+  text-align: center;
+}
+
+.num_order {
+  width: 160px;
+  height: 64px;
+  position: absolute;
+  font-size: 1.6em;
+  top: 130px;
+  left: 450px;
+  text-align: center;
+}
+
+.ordenes {
+  width: 720px;
+  height: 575px;
+  position: absolute;
+  top: 250px;
+  left: 650px;
+  background-color: #FCDCA4;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.enviar {
+  position: absolute;
+  width: 315px;
+  height: 80px;
+  border-radius: 25px;
+  background-color: #FFB730;
+  bottom: 40px;
+  left: 860px;
+  font-size: 2em;
+  text-align: center;
+}
+
+/*MODAL DE LA X DE ORDENES*/
+.text-de-X {
+  margin-bottom: 0 !important;
+  font-size: 1.8em !important;
+  text-align: center !important;
+}
+
+.btn-x {
+  padding: 10px !important;
+  font-size: 1.3em !important;
+}
+
+.modal-footer {
+  justify-content: center !important;
+  border-top: 0 !important;
+}
+
+.btn-secondary {
+  background-color: #EE9D05 !important;
 }
