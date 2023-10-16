@@ -272,20 +272,37 @@ body {
 }
 
 .menu1 {
-  left: 700px;
+  left: 770px;
 }
 
 .menu2 {
-  left: 920px;
+  left: 990px;
 }
 
 .bebidas {
-  left: 1140px;
+  left: 1210px;
 }
 
 .menu1:hover,
 .menu2:hover {
   background-color: #FCDCA4;
+}
+
+.productos {
+  width: 630px;
+  height: 575px;
+  position: absolute;
+  top: 250px;
+  left: 50px;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 20px;
+}
+
+.card {
+  border: 3px solid #a8a8a8 !important;
+  box-shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.5) !important;
 }
 
 .cerrar {
@@ -326,7 +343,7 @@ body {
   height: 575px;
   position: absolute;
   top: 250px;
-  left: 650px;
+  left: 730px;
   background-color: #FCDCA4;
   border-radius: 20px;
   text-align: center;

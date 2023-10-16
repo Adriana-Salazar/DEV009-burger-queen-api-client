@@ -36,6 +36,61 @@ export function Order() {
         <input type="text" className="cliente" placeholder="Nombre del cliente"></input>
         <input type="text" className="num_order" placeholder='N° Orden'></input>
       </div>
+
+      <div className='productos'>
+
+        <div className="card" style={{ width: '16rem', alignItems: 'center' }}>
+          <img src="https://i.blogs.es/421374/cafe-con-leche2/1366_2000.jpg" className="card-img-top" alt="..." />
+          <div className="card-body">
+            <h4 className="card-title" style={{ alignItems: 'center' }}>Café con Leche</h4>
+            <p className="card-text" style={{ fontSize: '1.2em', textAlign: 'center' }}>$1000</p>
+          </div>
+        </div>
+
+        <div className="card" style={{ width: '16rem', alignItems: 'center' }}>
+          <img src="https://i.blogs.es/421374/cafe-con-leche2/1366_2000.jpg" className="card-img-top" alt="..." />
+          <div className="card-body">
+            <h4 className="card-title" style={{ alignItems: 'center' }}>Café con Leche</h4>
+            <p className="card-text" style={{ fontSize: '1.2em', textAlign: 'center' }}>$1000</p>
+          </div>
+        </div>
+
+        <div className="card" style={{ width: '16rem', alignItems: 'center' }}>
+          <img src="https://i.blogs.es/421374/cafe-con-leche2/1366_2000.jpg" className="card-img-top" alt="..." />
+          <div className="card-body">
+            <h4 className="card-title" style={{ alignItems: 'center' }}>Café con Leche</h4>
+            <p className="card-text" style={{ fontSize: '1.2em', textAlign: 'center' }}>$1000</p>
+          </div>
+        </div>
+
+        <div className="card" style={{ width: '16rem', alignItems: 'center' }}>
+          <img src="https://i.blogs.es/421374/cafe-con-leche2/1366_2000.jpg" className="card-img-top" alt="..." />
+          <div className="card-body">
+            <h4 className="card-title" style={{ alignItems: 'center' }}>Café con Leche</h4>
+            <p className="card-text" style={{ fontSize: '1.2em', textAlign: 'center' }}>$1000</p>
+          </div>
+        </div>
+
+        <div className="card" style={{ width: '16rem', alignItems: 'center' }}>
+          <img src="https://i.blogs.es/421374/cafe-con-leche2/1366_2000.jpg" className="card-img-top" alt="..." />
+          <div className="card-body">
+            <h4 className="card-title" style={{ alignItems: 'center' }}>Café con Leche</h4>
+            <p className="card-text" style={{ fontSize: '1.2em', textAlign: 'center' }}>$1000</p>
+          </div>
+        </div>
+
+        <div className="card" style={{ width: '16rem', alignItems: 'center' }}>
+          <img src="https://i.blogs.es/421374/cafe-con-leche2/1366_2000.jpg" className="card-img-top" alt="..." />
+          <div className="card-body">
+            <h4 className="card-title" style={{ alignItems: 'center' }}>Café con Leche</h4>
+            <p className="card-text" style={{ fontSize: '1.2em', textAlign: 'center' }}>$1000</p>
+          </div>
+        </div>
+
+
+
+      </div>
+
       <div className='ordenes'>
         <h2 className="orden"> Resúmen de Orden </h2>
       </div>
