@@ -30,6 +30,7 @@ export function Order() {
         <button className='cerrar' onClick={openModal}><b>X</b></button>
         <button className="menu1"> Desayuno </button>
         <button className="menu2"> Resto del día </button>
+        <button className="bebidas"> Bebidas </button>
       </div>
       <div>
         <input type="text" className="cliente" placeholder="Nombre del cliente"></input>

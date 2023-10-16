@@ -259,15 +259,28 @@ body {
 }
 
 .menu1,
-.menu2 {
-  width: 300px;
-  height: 110px;
+.menu2,
+.bebidas {
+  width: 200px;
+  height: 80px;
   background-color: #FFB730;
   border-radius: 25px;
-  font-size: 48px;
+  font-size: 2em;
   font-family: 'Irish Grover', cursive;
   position: absolute;
   top: 95px;
+}
+
+.menu1 {
+  left: 700px;
+}
+
+.menu2 {
+  left: 920px;
+}
+
+.bebidas {
+  left: 1140px;
 }
 
 .menu1:hover,
@@ -287,13 +300,6 @@ body {
   left: 1400px;
 }
 
-.menu1 {
-  left: 700px;
-}
-
-.menu2 {
-  left: 1040px;
-}
 
 .cliente {
   width: 340px;

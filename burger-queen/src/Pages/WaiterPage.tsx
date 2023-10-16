@@ -1,13 +1,16 @@
-import '../App.css'
-import { Profile, } from '../components/common';
-import { TablaOrdenMesero } from '../components/waiter'
+import React from 'react';
+import { Profile } from '../components/common';
+import { Waiter } from '../components/waiter';
+import { useLocation } from 'react-router-dom';
 
 function WaiterView() {
-  console.log('Renderizando WaiterPage');
+  const location = useLocation();
+  const token = location.state?.token;
+
   return (
     <div>
       <Profile />
-      <TablaOrdenMesero />
+      <Waiter token={token} />
     </div>
   );
 }
