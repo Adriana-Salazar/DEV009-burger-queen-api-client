@@ -1,8 +1,21 @@
 import { TextLogo } from '../components/common'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export function Order() {
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+}
+
+interface OrderProps {
+  token: string; // Asegúrate de recibir el token como prop
+}
+
+
+export function Order({ token }: OrderProps) {
   const [isModalVisible, setModalVisible] = useState(false);
 
   const openModal = () => {
@@ -22,6 +35,29 @@ export function Order() {
     navigateTo('/waiter');
   };
 
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const response = await fetch('https://burger-queen-mock-9l2y.onrender.com/products', {
+          headers: {
+            Authorization: `Bearer ${token}`, // Asegúrate de tener el token disponible
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('La solicitud no fue exitosa');
+        }
+        const data = await response.json();
+        setProducts(data.products);
+      } catch (error) {
+        console.error('Error al cargar los productos:', error);
+      }
+    }
+
+    fetchProducts();
+  }, [token]);
 
   return (
     <>
@@ -38,58 +74,26 @@ export function Order() {
       </div>
 
       <div className='productos'>
+        {products ? (
 
-        <div className="card" style={{ width: '16rem', alignItems: 'center' }}>
-          <img src="https://i.blogs.es/421374/cafe-con-leche2/1366_2000.jpg" className="card-img-top" alt="..." />
-          <div className="card-body">
-            <h4 className="card-title" style={{ alignItems: 'center' }}>Café con Leche</h4>
-            <p className="card-text" style={{ fontSize: '1.2em', textAlign: 'center' }}>$1000</p>
-          </div>
-        </div>
-
-        <div className="card" style={{ width: '16rem', alignItems: 'center' }}>
-          <img src="https://i.blogs.es/421374/cafe-con-leche2/1366_2000.jpg" className="card-img-top" alt="..." />
-          <div className="card-body">
-            <h4 className="card-title" style={{ alignItems: 'center' }}>Café con Leche</h4>
-            <p className="card-text" style={{ fontSize: '1.2em', textAlign: 'center' }}>$1000</p>
-          </div>
-        </div>
-
-        <div className="card" style={{ width: '16rem', alignItems: 'center' }}>
-          <img src="https://i.blogs.es/421374/cafe-con-leche2/1366_2000.jpg" className="card-img-top" alt="..." />
-          <div className="card-body">
-            <h4 className="card-title" style={{ alignItems: 'center' }}>Café con Leche</h4>
-            <p className="card-text" style={{ fontSize: '1.2em', textAlign: 'center' }}>$1000</p>
-          </div>
-        </div>
-
-        <div className="card" style={{ width: '16rem', alignItems: 'center' }}>
-          <img src="https://i.blogs.es/421374/cafe-con-leche2/1366_2000.jpg" className="card-img-top" alt="..." />
-          <div className="card-body">
-            <h4 className="card-title" style={{ alignItems: 'center' }}>Café con Leche</h4>
-            <p className="card-text" style={{ fontSize: '1.2em', textAlign: 'center' }}>$1000</p>
-          </div>
-        </div>
-
-        <div className="card" style={{ width: '16rem', alignItems: 'center' }}>
-          <img src="https://i.blogs.es/421374/cafe-con-leche2/1366_2000.jpg" className="card-img-top" alt="..." />
-          <div className="card-body">
-            <h4 className="card-title" style={{ alignItems: 'center' }}>Café con Leche</h4>
-            <p className="card-text" style={{ fontSize: '1.2em', textAlign: 'center' }}>$1000</p>
-          </div>
-        </div>
-
-        <div className="card" style={{ width: '16rem', alignItems: 'center' }}>
-          <img src="https://i.blogs.es/421374/cafe-con-leche2/1366_2000.jpg" className="card-img-top" alt="..." />
-          <div className="card-body">
-            <h4 className="card-title" style={{ alignItems: 'center' }}>Café con Leche</h4>
-            <p className="card-text" style={{ fontSize: '1.2em', textAlign: 'center' }}>$1000</p>
-          </div>
-        </div>
+          products.map((product) => (
+            <div className="card" key={product.id} style={{ width: '16rem', alignItems: 'center' }}>
+              <img src={product.image} className="card-img-top" alt={product.name} />
+              <div className="card-body">
+                <h4 className="card-title" style={{ alignItems: 'center' }}>{product.name}</h4>
+                <p className="card-text" style={{ fontSize: '1.2em', textAlign: 'center' }}>{`$${product.price}`}</p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>Cargando órdenes...</p>
+        )
+        }
 
 
 
       </div>
+
 
       <div className='ordenes'>
         <h2 className="orden"> Resúmen de Orden </h2>
