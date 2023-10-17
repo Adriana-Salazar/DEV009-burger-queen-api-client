@@ -70,7 +70,7 @@ export function Profile() {
       <div className={`perfil ${isMenuVisible ? 'active' : ''}`} onClick={toggleMenu}>
         <div className="icono">
           <img
-            src="https://i.pinimg.com/736x/ab/e1/aa/abe1aa8c1d9944fc14f0711051d4b833.jpg"
+            src="https://bangkok.nyc3.cdn.digitaloceanspaces.com/20230618_top_m/sticker-fan_8966368_m.webp"
             alt="iconperfil"
             className="iconprofile"
           />
