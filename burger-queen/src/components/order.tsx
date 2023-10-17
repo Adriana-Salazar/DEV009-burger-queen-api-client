@@ -1,22 +1,23 @@
-import { TextLogo } from '../components/common'
+import { TextLogo } from '../components/common';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 
 interface Product {
   id: number;
   name: string;
   price: number;
   image: string;
+  type: string;
+  dateProcessed?: string | null;
 }
 
 interface OrderProps {
-  token: string; // Asegúrate de recibir el token como prop
+  token: string;
 }
-
 
 export function Order({ token }: OrderProps) {
   const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
 
   const openModal = () => {
     console.log('Abriendo el modal');
@@ -31,7 +32,6 @@ export function Order({ token }: OrderProps) {
 
   const handleAccept = () => {
     closeModal();
-    // Redirige a /waiter
     navigateTo('/waiter');
   };
 
@@ -42,7 +42,7 @@ export function Order({ token }: OrderProps) {
       try {
         const response = await fetch('https://burger-queen-mock-9l2y.onrender.com/products', {
           headers: {
-            Authorization: `Bearer ${token}`, // Asegúrate de tener el token disponible
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -50,7 +50,7 @@ export function Order({ token }: OrderProps) {
           throw new Error('La solicitud no fue exitosa');
         }
         const data = await response.json();
-        setProducts(data.products);
+        setProducts(data);
       } catch (error) {
         console.error('Error al cargar los productos:', error);
       }
@@ -64,19 +64,20 @@ export function Order({ token }: OrderProps) {
       <div className='menu-container'>
         <TextLogo />
         <button className='cerrar' onClick={openModal}><b>X</b></button>
-        <button className="menu1"> Desayuno </button>
-        <button className="menu2"> Resto del día </button>
-        <button className="bebidas"> Bebidas </button>
+        <button className="menu1" onClick={() => setSelectedCategory('Breakfast')}>Desayuno</button>
+        <button className="menu2" onClick={() => setSelectedCategory('Lunch')}>Resto del día</button>
+        <button className="bebidas" onClick={() => setSelectedCategory('Beverages')}>Bebidas</button>
       </div>
       <div>
         <input type="text" className="cliente" placeholder="Nombre del cliente"></input>
         <input type="text" className="num_order" placeholder='N° Orden'></input>
       </div>
-
       <div className='productos'>
-        {products ? (
-
-          products.map((product) => (
+        {products
+          .filter((product) => (
+            !selectedCategory || product.type.toLowerCase() === selectedCategory.toLowerCase()
+          ))
+          .map((product) => (
             <div className="card" key={product.id} style={{ width: '16rem', alignItems: 'center' }}>
               <img src={product.image} className="card-img-top" alt={product.name} />
               <div className="card-body">
@@ -85,22 +86,13 @@ export function Order({ token }: OrderProps) {
               </div>
             </div>
           ))
-        ) : (
-          <p>Cargando órdenes...</p>
-        )
         }
-
-
-
       </div>
-
-
       <div className='ordenes'>
         <h2 className="orden"> Resúmen de Orden </h2>
       </div>
       <div className='enviar'>Enviar Orden</div>
 
-      {/* Modal */}
       {isModalVisible && (
         <div>
           <div className="modal-backdrop fade show"></div>
@@ -108,7 +100,6 @@ export function Order({ token }: OrderProps) {
             <div className="modal-dialog modal-dialog-centered">
               <div className="modal-content">
                 <div className="modal-body">
-                  {/* Contenido de tu modal */}
                   <p className='text-de-X'>¿Estás seguro de que deseas cerrar la vista de órdenes?</p>
                 </div>
                 <div className="modal-footer">
