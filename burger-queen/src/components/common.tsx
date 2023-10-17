@@ -12,26 +12,6 @@ export function BackgroundImage() {
   )
 }
 
-
-// export function LoginForm() {
-//   return (
-//     <div className="form">
-//       <form>
-//         <h2 className="restro"> My Restro </h2>
-//         <h1 className="burger burger2" > Burger</h1>
-//         <h1 className="queen"> Queen </h1>
-//         <div className="login">
-//           <label className="label" > Ingresa tu email </label>
-//           <input type="email" className="email" id='email'></input>
-//           <label className="label"> Ingresa tu password </label>
-//           <input type="password" className="password" id='password'></input>
-//           <button className="ingreso" id='ingreso' onClick={Button}> Ingresar </button>
-//         </div>
-//       </form>
-//     </div>
-//   )
-// }
-
 export function TextLogo() {
   return (
     <>
@@ -43,7 +23,7 @@ export function TextLogo() {
   )
 }
 
-export function Profile() {
+export function Profile({ token }: { token: string }) {
   const navigateTo = useNavigate();
 
   //aca se utiliza el hook useState de React para crear una variable de estado llamada isMenuVisible que al comienzo estara en false
@@ -58,9 +38,9 @@ export function Profile() {
     navigateTo('/');
   };
 
-  const handleTomarOrden = () => {
+  const handleTomarOrden = (token: string) => {
     // Redirige al usuario a la página de órdenes
-    navigateTo('/order');
+    navigateTo('/order', { state: { token } });
   };
 
   return (
@@ -79,8 +59,9 @@ export function Profile() {
           <div className="cargo">  {location.pathname === '/waiter' ? 'Waiter' : location.pathname === '/chef' ? 'Chef' : ''}</div>
           {/* Si la dirección es /waiter, aparecerá la opción de tomar orden; de lo contrario, no */}
           {location.pathname === '/waiter' && (
-            <div className="irapedidos" onClick={handleTomarOrden}>Tomar Orden</div>
+            <div className="irapedidos" onClick={() => handleTomarOrden(token)}>Tomar Orden</div>
           )}
+
           <div className="cerrar_sesion" onClick={handleLogout} >Cerrar Sesion</div>
         </div>
       </div>
