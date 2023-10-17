@@ -9,7 +9,7 @@ function WaiterView() {
 
   return (
     <div>
-      <Profile />
+      <Profile token={token} />
       <Waiter token={token} />
     </div>
   );
