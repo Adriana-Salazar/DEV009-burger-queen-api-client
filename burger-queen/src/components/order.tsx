@@ -19,9 +19,12 @@ interface OrderProps {
   token: string;
 }
 
-function calculateTotalPrice(products: Product[]) {
-  const totalPrice = products.reduce((total, product) => total + product.price, 0);
-  return totalPrice;
+function calculateTotalWithQuantity(products, quantities) {
+  let total = 0;
+  for (const product of products) {
+    total += product.price * quantities[product.id];
+  }
+  return total;
 }
 
 
@@ -29,8 +32,10 @@ export function Order({ token }: OrderProps) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
-  /* */
   const [productAdded, setProductAdded] = useState<{ [key: number]: boolean }>({});
+  const [cantidadProductos, setCantidadProductos] = useState<{ [key: number]: number }>({});
+  const [total, setTotal] = useState(calculateTotalWithQuantity(selectedProducts, cantidadProductos));
+
 
   const openModal = () => {
     console.log('Abriendo el modal');
@@ -49,9 +54,10 @@ export function Order({ token }: OrderProps) {
   };
 
   const [products, setProducts] = useState<Product[]>([]);
+  
 
   useEffect(() => {
-    async function fetchProducts() {
+    async function fetchProducts() {      
       try {
         const response = await fetch('https://burger-queen-mock-9l2y.onrender.com/products', {
           headers: {
@@ -64,6 +70,12 @@ export function Order({ token }: OrderProps) {
         }
         const data = await response.json();
         setProducts(data);
+        setCantidadProductos(
+          data.reduce((accumulator, product) => {
+            return { ...accumulator, [product.id]: 1 };
+          }, {})
+        );
+        
       } catch (error) {
         console.error('Error al cargar los productos:', error);
       }
@@ -72,22 +84,55 @@ export function Order({ token }: OrderProps) {
     fetchProducts();
   }, [token]);
 
-  const handleProductSelect = (product: Product) => {
+  const handleProductSelect = (product) => {
     if (!selectedProducts.find((selectedProduct) => selectedProduct.id === product.id)) {
-      // Si el producto no está en la lista, agrégalo
       setSelectedProducts([...selectedProducts, product]);
-      // Agregar el producto al estado productAdded
       setProductAdded({ ...productAdded, [product.id]: true });
+  
+      // Actualiza el campo de total
+      const updatedTotal = calculateTotalWithQuantity([...selectedProducts, product], cantidadProductos);
+      setTotal(updatedTotal);
     }
   };
+  
 
-  // Filtra los productos para eliminar el producto seleccionado
   const handleRemoveProduct = (productToRemove: Product) => {
     setSelectedProducts(selectedProducts.filter((product) => product !== productToRemove));
-    // Actualizar el estado productAdded para eliminar la clase "added"
     setProductAdded({ ...productAdded, [productToRemove.id]: false });
+    const { [productToRemove.id]: _, ...newCantidadProductos } = cantidadProductos;
+    setCantidadProductos(newCantidadProductos);
   };
 
+  const incrementarCantidad = (productId) => {
+    setCantidadProductos((prevCantidadProductos) => ({
+      ...prevCantidadProductos,
+      [productId]: prevCantidadProductos[productId] + 1,
+    }));
+  
+    // Actualiza el campo de total
+    const updatedTotal = calculateTotalWithQuantity(selectedProducts, {
+      ...cantidadProductos,
+      [productId]: cantidadProductos[productId] + 1,
+    });
+    setTotal(updatedTotal);
+  };
+  
+  const decrementarCantidad = (productId) => {
+    if (cantidadProductos[productId] > 1) {
+      setCantidadProductos((prevCantidadProductos) => ({
+        ...prevCantidadProductos,
+        [productId]: prevCantidadProductos[productId] - 1,
+      }));
+  
+      // Actualiza el campo de total
+      const updatedTotal = calculateTotalWithQuantity(selectedProducts, {
+        ...cantidadProductos,
+        [productId]: cantidadProductos[productId] - 1,
+      });
+      setTotal(updatedTotal);
+    }
+  };
+  
   return (
     <>
       <div className='menu-container'>
@@ -122,36 +167,25 @@ export function Order({ token }: OrderProps) {
       <div className='ordenes'>
         <div className="ordenes-productos">
           {selectedProducts.map((product) => (
-
-            <div key={product.id} className="producto-resumen">
-              <img className='img-ordenes-productos' src={product.image} alt={product.name} />
-
-
-
-
-              <div className="contenedor-info-orden">
-                <p className='name-product'>{product.name}</p>
-
-                <div className="masANDmenos">
-                  <FontAwesomeIcon className='iconosmasymenos' icon={faPlus} style={{ color: "#000000" }} />
-                  <h4 className='cantidad-productos-orden'> 1 </h4>
-                  <FontAwesomeIcon className='iconosmasymenos' icon={faMinus} style={{ color: "#000000" }} />
-                </div>
-
-              </div>
-
-              <div className="delete-price">
-                <FontAwesomeIcon className='delete' icon={faTrash} style={{ color: "#000000" }} onClick={() => handleRemoveProduct(product)} />
-                <p className='price'>${product.price}</p>
-
+        <div key={product.id} className="producto-resumen">
+            <img className="img-ordenes-productos" src={product.image} alt={product.name} />
+            <div className="contenedor-info-orden">
+              <p className="name-product">{product.name}</p>
+              <div className="masANDmenos">
+                <FontAwesomeIcon className="iconosmasymenos" icon={faPlus} style={{ color: "#000000" }} onClick={() => incrementarCantidad(product.id)} />
+                <h4 className="cantidad-productos-orden">{cantidadProductos[product.id]}</h4>
+                <FontAwesomeIcon className="iconosmasymenos" icon={faMinus} style={{ color: "#000000" }} onClick={() => decrementarCantidad(product.id)} />
               </div>
             </div>
-
-
-          ))}
+            <div className="delete-price">
+              <FontAwesomeIcon className="delete" icon={faTrash} style={{ color: "#000000" }} onClick={() => handleRemoveProduct(product)} />
+              <p className="price">${product.price}</p>
+            </div>
+          </div>
+        ))}
         </div>
         <div className="total">
-          <p>Total: ${calculateTotalPrice(selectedProducts)}</p>
+          <p>Total: ${total}</p>
         </div>
       </div>
 
