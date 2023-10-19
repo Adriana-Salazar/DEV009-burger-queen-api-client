@@ -15,9 +15,16 @@ interface OrderProps {
   token: string;
 }
 
+function calculateTotalPrice(products: Product[]) {
+  const totalPrice = products.reduce((total, product) => total + product.price, 0);
+  return totalPrice;
+}
+
+
 export function Order({ token }: OrderProps) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
 
   const openModal = () => {
     console.log('Abriendo el modal');
@@ -59,6 +66,10 @@ export function Order({ token }: OrderProps) {
     fetchProducts();
   }, [token]);
 
+  const handleProductSelect = (product: Product) => {
+    setSelectedProducts([...selectedProducts, product]);
+  };
+
   return (
     <>
       <div className='menu-container'>
@@ -83,6 +94,7 @@ export function Order({ token }: OrderProps) {
               <div className="card-body">
                 <h4 className="card-title" style={{ alignItems: 'center' }}>{product.name}</h4>
                 <p className="card-text" style={{ fontSize: '1.2em', textAlign: 'center' }}>{`$${product.price}`}</p>
+                <button onClick={() => handleProductSelect(product)}>Seleccionar</button>
               </div>
             </div>
           ))
@@ -90,9 +102,20 @@ export function Order({ token }: OrderProps) {
       </div>
       <div className='ordenes'>
         <h2 className="orden"> Resúmen de Orden </h2>
+        {selectedProducts.map((product) => (
+          <div key={product.id} className="producto-resumen" >
+            <img src={product.image} alt={product.name} style={{ width: '50px', height: '50px' }} />
+            <div>
+              <p>{product.name}</p>
+              <p>${product.price}</p>
+            </div>
+          </div>
+        ))}
+        <div className="total">
+          <p>Total: ${calculateTotalPrice(selectedProducts)}</p>
+        </div>        
       </div>
       <div className='enviar'>Enviar Orden</div>
-
       {isModalVisible && (
         <div>
           <div className="modal-backdrop fade show"></div>
@@ -116,5 +139,5 @@ export function Order({ token }: OrderProps) {
         </div>
       )}
     </>
-  )
+  );
 }
