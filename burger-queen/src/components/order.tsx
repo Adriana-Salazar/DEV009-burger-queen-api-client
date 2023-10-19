@@ -29,6 +29,8 @@ export function Order({ token }: OrderProps) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
+  /* */
+  const [productAdded, setProductAdded] = useState<{ [key: number]: boolean }>({});
 
   const openModal = () => {
     console.log('Abriendo el modal');
@@ -71,7 +73,19 @@ export function Order({ token }: OrderProps) {
   }, [token]);
 
   const handleProductSelect = (product: Product) => {
-    setSelectedProducts([...selectedProducts, product]);
+    if (!selectedProducts.find((selectedProduct) => selectedProduct.id === product.id)) {
+      // Si el producto no está en la lista, agrégalo
+      setSelectedProducts([...selectedProducts, product]);
+      // Agregar el producto al estado productAdded
+      setProductAdded({ ...productAdded, [product.id]: true });
+    }
+  };
+
+  // Filtra los productos para eliminar el producto seleccionado
+  const handleRemoveProduct = (productToRemove: Product) => {
+    setSelectedProducts(selectedProducts.filter((product) => product !== productToRemove));
+    // Actualizar el estado productAdded para eliminar la clase "added"
+    setProductAdded({ ...productAdded, [productToRemove.id]: false });
   };
 
   return (
@@ -93,7 +107,7 @@ export function Order({ token }: OrderProps) {
             !selectedCategory || product.type.toLowerCase() === selectedCategory.toLowerCase()
           ))
           .map((product) => (
-            <div className="card" key={product.id} style={{ width: '15.5rem', alignItems: 'center' }}>
+            <div className={`card ${productAdded[product.id] ? 'added' : ''}`} key={product.id} style={{ width: '15.5rem', alignItems: 'center' }}>
               <img src={product.image} className="card-img-top" alt={product.name} />
               <div className="card-body">
                 <h4 className="card-title" style={{ alignItems: 'center' }}>{product.name}</h4>
@@ -127,7 +141,7 @@ export function Order({ token }: OrderProps) {
               </div>
 
               <div className="delete-price">
-                <FontAwesomeIcon className='delete' icon={faTrash} style={{ color: "#000000" }} />
+                <FontAwesomeIcon className='delete' icon={faTrash} style={{ color: "#000000" }} onClick={() => handleRemoveProduct(product)} />
                 <p className='price'>${product.price}</p>
 
               </div>
