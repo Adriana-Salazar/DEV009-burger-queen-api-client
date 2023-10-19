@@ -1,6 +1,10 @@
 import { TextLogo } from '../components/common';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faMinus, faTrash } from '@fortawesome/free-solid-svg-icons';
+
+
 
 interface Product {
   id: number;
@@ -39,7 +43,7 @@ export function Order({ token }: OrderProps) {
 
   const handleAccept = () => {
     closeModal();
-    navigateTo('/waiter');
+    navigateTo('/waiter', { state: { token } });
   };
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -89,32 +93,55 @@ export function Order({ token }: OrderProps) {
             !selectedCategory || product.type.toLowerCase() === selectedCategory.toLowerCase()
           ))
           .map((product) => (
-            <div className="card" key={product.id} style={{ width: '16rem', alignItems: 'center' }}>
+            <div className="card" key={product.id} style={{ width: '15.5rem', alignItems: 'center' }}>
               <img src={product.image} className="card-img-top" alt={product.name} />
               <div className="card-body">
                 <h4 className="card-title" style={{ alignItems: 'center' }}>{product.name}</h4>
                 <p className="card-text" style={{ fontSize: '1.2em', textAlign: 'center' }}>{`$${product.price}`}</p>
-                <button onClick={() => handleProductSelect(product)}>Seleccionar</button>
+                <button className="btn-mandar-orden" onClick={() => handleProductSelect(product)}>Agregar a la orden</button>
               </div>
             </div>
           ))
         }
       </div>
+
       <div className='ordenes'>
-        <h2 className="orden"> Resúmen de Orden </h2>
-        {selectedProducts.map((product) => (
-          <div key={product.id} className="producto-resumen" >
-            <img src={product.image} alt={product.name} style={{ width: '50px', height: '50px' }} />
-            <div>
-              <p>{product.name}</p>
-              <p>${product.price}</p>
+        <div className="ordenes-productos">
+          {selectedProducts.map((product) => (
+
+            <div key={product.id} className="producto-resumen">
+              <img className='img-ordenes-productos' src={product.image} alt={product.name} />
+
+
+
+
+              <div className="contenedor-info-orden">
+                <p className='name-product'>{product.name}</p>
+
+                <div className="masANDmenos">
+                  <FontAwesomeIcon className='iconosmasymenos' icon={faPlus} style={{ color: "#000000" }} />
+                  <h4 className='cantidad-productos-orden'> 1 </h4>
+                  <FontAwesomeIcon className='iconosmasymenos' icon={faMinus} style={{ color: "#000000" }} />
+                </div>
+
+              </div>
+
+              <div className="delete-price">
+                <FontAwesomeIcon className='delete' icon={faTrash} style={{ color: "#000000" }} />
+                <p className='price'>${product.price}</p>
+
+              </div>
             </div>
-          </div>
-        ))}
+
+
+          ))}
+        </div>
         <div className="total">
           <p>Total: ${calculateTotalPrice(selectedProducts)}</p>
-        </div>        
+        </div>
       </div>
+
+
       <div className='enviar'>Enviar Orden</div>
       {isModalVisible && (
         <div>
