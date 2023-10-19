@@ -101,7 +101,11 @@ export function Order({ token }: OrderProps) {
     setProductAdded({ ...productAdded, [productToRemove.id]: false });
     const { [productToRemove.id]: _, ...newCantidadProductos } = cantidadProductos;
     setCantidadProductos(newCantidadProductos);
+    // Actualiza el campo de total
+    const updatedTotal = calculateTotalWithQuantity(selectedProducts.filter((product) => product !== productToRemove), cantidadProductos);
+    setTotal(updatedTotal);
   };
+  
 
   const incrementarCantidad = (productId) => {
     setCantidadProductos((prevCantidadProductos) => ({
