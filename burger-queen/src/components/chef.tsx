@@ -10,7 +10,6 @@ export function TablaOrdenCocinero() {
         <table className=" estilos table table-striped mx-auto">
           <thead>
             <tr>
-              <th className='style text-center'>N° Orden</th>
               <th className='style text-center'>Hora de <br></br>pedido</th>
               <th className='style text-center'>Estado</th>
               <th className='style text-center'>Hora de <br></br>entrega</th>
@@ -19,7 +18,6 @@ export function TablaOrdenCocinero() {
           </thead>
           <tbody>
             <tr>
-              <th className='style2 text-center'>001</th>
               <td className='style2 text-center'>7:10am</td>
               <td className='style2 text-center'>Listo</td>
               <td className='style2 text-center'>7:20am</td>

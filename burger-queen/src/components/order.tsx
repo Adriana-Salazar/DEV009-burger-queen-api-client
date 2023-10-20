@@ -19,7 +19,7 @@ interface OrderProps {
   token: string;
 }
 
-function calculateTotalWithQuantity(products, quantities) {
+function calculateTotalWithQuantity(products: Product[], quantities: { [key: number]: number }) {
   let total = 0;
   for (const product of products) {
     total += product.price * quantities[product.id];
@@ -28,13 +28,15 @@ function calculateTotalWithQuantity(products, quantities) {
 }
 
 
+
 export function Order({ token }: OrderProps) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
   const [productAdded, setProductAdded] = useState<{ [key: number]: boolean }>({});
   const [cantidadProductos, setCantidadProductos] = useState<{ [key: number]: number }>({});
-  const [total, setTotal] = useState(calculateTotalWithQuantity(selectedProducts, cantidadProductos));
+  const [total, setTotal] = useState(() => calculateTotalWithQuantity(selectedProducts, cantidadProductos));
+
 
 
   const openModal = () => {
@@ -54,10 +56,10 @@ export function Order({ token }: OrderProps) {
   };
 
   const [products, setProducts] = useState<Product[]>([]);
-  
+
 
   useEffect(() => {
-    async function fetchProducts() {      
+    async function fetchProducts() {
       try {
         const response = await fetch('https://burger-queen-mock-9l2y.onrender.com/products', {
           headers: {
@@ -71,11 +73,11 @@ export function Order({ token }: OrderProps) {
         const data = await response.json();
         setProducts(data);
         setCantidadProductos(
-          data.reduce((accumulator, product) => {
+          data.reduce((accumulator: { [key: number]: number }, product: Product) => {
             return { ...accumulator, [product.id]: 1 };
           }, {})
         );
-        
+
       } catch (error) {
         console.error('Error al cargar los productos:', error);
       }
@@ -84,59 +86,55 @@ export function Order({ token }: OrderProps) {
     fetchProducts();
   }, [token]);
 
-  const handleProductSelect = (product) => {
+  const handleProductSelect = (product: Product) => {
     if (!selectedProducts.find((selectedProduct) => selectedProduct.id === product.id)) {
       setSelectedProducts([...selectedProducts, product]);
       setProductAdded({ ...productAdded, [product.id]: true });
-  
-      // Actualiza el campo de total
-      const updatedTotal = calculateTotalWithQuantity([...selectedProducts, product], cantidadProductos);
-      setTotal(updatedTotal);
     }
+    const updatedTotal = calculateTotalWithQuantity(selectedProducts, cantidadProductos);
+    setTotal(updatedTotal);
   };
-  
 
   const handleRemoveProduct = (productToRemove: Product) => {
     setSelectedProducts(selectedProducts.filter((product) => product !== productToRemove));
     setProductAdded({ ...productAdded, [productToRemove.id]: false });
-    const { [productToRemove.id]: _, ...newCantidadProductos } = cantidadProductos;
-    setCantidadProductos(newCantidadProductos);
-    // Actualiza el campo de total
-    const updatedTotal = calculateTotalWithQuantity(selectedProducts.filter((product) => product !== productToRemove), cantidadProductos);
+    const updatedTotal = calculateTotalWithQuantity(selectedProducts, cantidadProductos);
     setTotal(updatedTotal);
   };
-  
 
-  const incrementarCantidad = (productId) => {
-    setCantidadProductos((prevCantidadProductos) => ({
-      ...prevCantidadProductos,
-      [productId]: prevCantidadProductos[productId] + 1,
-    }));
-  
-    // Actualiza el campo de total
-    const updatedTotal = calculateTotalWithQuantity(selectedProducts, {
-      ...cantidadProductos,
-      [productId]: cantidadProductos[productId] + 1,
-    });
-    setTotal(updatedTotal);
-  };
-  
-  const decrementarCantidad = (productId) => {
-    if (cantidadProductos[productId] > 1) {
-      setCantidadProductos((prevCantidadProductos) => ({
+
+  const incrementarCantidad = (productId: number) => {
+    setCantidadProductos((prevCantidadProductos) => {
+      const updatedCantidadProductos = {
         ...prevCantidadProductos,
-        [productId]: prevCantidadProductos[productId] - 1,
-      }));
-  
-      // Actualiza el campo de total
-      const updatedTotal = calculateTotalWithQuantity(selectedProducts, {
-        ...cantidadProductos,
-        [productId]: cantidadProductos[productId] - 1,
-      });
+        [productId]: prevCantidadProductos[productId] + 1,
+      };
+      const updatedTotal = calculateTotalWithQuantity(selectedProducts, updatedCantidadProductos);
       setTotal(updatedTotal);
-    }
+      return updatedCantidadProductos;
+    });
   };
-  
+
+  const decrementarCantidad = (productId: number) => {
+    setCantidadProductos((prevCantidadProductos) => {
+      if (prevCantidadProductos[productId] > 1) {
+        const updatedCantidadProductos = {
+          ...prevCantidadProductos,
+          [productId]: prevCantidadProductos[productId] - 1,
+        };
+        const updatedTotal = calculateTotalWithQuantity(selectedProducts, updatedCantidadProductos);
+        setTotal(updatedTotal);
+        return updatedCantidadProductos;
+      }
+      return prevCantidadProductos;
+    });
+  };
+
+  useEffect(() => {
+    const updatedTotal = calculateTotalWithQuantity(selectedProducts, cantidadProductos);
+    setTotal(updatedTotal);
+  }, [selectedProducts, cantidadProductos]);
+
   return (
     <>
       <div className='menu-container'>
@@ -148,7 +146,6 @@ export function Order({ token }: OrderProps) {
       </div>
       <div>
         <input type="text" className="cliente" placeholder="Nombre del cliente"></input>
-        <input type="text" className="num_order" placeholder='N° Orden'></input>
       </div>
       <div className='productos'>
         {products
@@ -171,22 +168,23 @@ export function Order({ token }: OrderProps) {
       <div className='ordenes'>
         <div className="ordenes-productos">
           {selectedProducts.map((product) => (
-        <div key={product.id} className="producto-resumen">
-            <img className="img-ordenes-productos" src={product.image} alt={product.name} />
-            <div className="contenedor-info-orden">
-              <p className="name-product">{product.name}</p>
-              <div className="masANDmenos">
-                <FontAwesomeIcon className="iconosmasymenos" icon={faPlus} style={{ color: "#000000" }} onClick={() => incrementarCantidad(product.id)} />
-                <h4 className="cantidad-productos-orden">{cantidadProductos[product.id]}</h4>
-                <FontAwesomeIcon className="iconosmasymenos" icon={faMinus} style={{ color: "#000000" }} onClick={() => decrementarCantidad(product.id)} />
+            <div key={product.id} className="producto-resumen">
+              <img className="img-ordenes-productos" src={product.image} alt={product.name} />
+              <div className="contenedor-info-orden">
+                <p className="name-product">{product.name}</p>
+                <div className="masANDmenos">
+                  <FontAwesomeIcon className="iconosmasymenos" icon={faMinus} style={{ color: "#000000" }} onClick={() => decrementarCantidad(product.id)} />
+                  <h4 className="cantidad-productos-orden">{cantidadProductos[product.id]}</h4>
+                  <FontAwesomeIcon className="iconosmasymenos" icon={faPlus} style={{ color: "#000000" }} onClick={() => incrementarCantidad(product.id)} />
+                </div>
+              </div>
+              <div className="delete-price">
+                <FontAwesomeIcon className="delete" icon={faTrash} style={{ color: "#000000" }} onClick={() => handleRemoveProduct(product)} />
+                <p className="price">${product.price * cantidadProductos[product.id]}</p>
               </div>
             </div>
-            <div className="delete-price">
-              <FontAwesomeIcon className="delete" icon={faTrash} style={{ color: "#000000" }} onClick={() => handleRemoveProduct(product)} />
-              <p className="price">${product.price}</p>
-            </div>
-          </div>
-        ))}
+          ))}
+
         </div>
         <div className="total">
           <p>Total: ${total}</p>

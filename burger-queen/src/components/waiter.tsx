@@ -53,7 +53,6 @@ export function TablaOrdenMesero({ orders }: { orders: Order[] }) {
         <table className="estilos table table-striped mx-auto">
           <thead>
             <tr>
-              <th className='style text-center'>N° Orden</th>
               <th className='style text-center'>Cliente</th>
               <th className='style text-center'>Hora de pedido</th>
               <th className='style text-center'>Estado</th>
@@ -64,7 +63,6 @@ export function TablaOrdenMesero({ orders }: { orders: Order[] }) {
             {orders ? (
               orders.map((order) => (
                 <tr key={order.id}>
-                  <td className='style2 text-center'>{order.id}</td>
                   <td className='style2 text-center'>{order.client}</td>
                   <td className='style2 text-center'>{order.dataEntry}</td>
                   <td className='style2 text-center'>{order.status}</td>
