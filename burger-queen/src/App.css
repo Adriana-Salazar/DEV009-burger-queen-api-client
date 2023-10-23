@@ -252,6 +252,51 @@ body {
   font-size: 1.5em !important;
 }
 
+/*estilos del modal donde se ve la order de la persona al darle click al ojito del cuadro del mesero o cocinero*/
+.detalle-ordenes-productos {
+  overflow: auto;
+}
+
+.detalle-producto-resumen {
+  display: grid;
+  grid-template-columns: 30% 45% 25%;
+  margin: 15px;
+}
+
+.detalle-img-ordenes-productos {
+  width: 125px;
+  height: 110px;
+
+}
+
+.detalle-name-product {
+  font-size: 1.6em;
+}
+
+.detalle-price-p {
+  font-size: 1.6em;
+  margin-top: 20px;
+  margin-left: 65px;
+}
+
+.modal-footer {
+  background-color: #facf86 !important;
+  font-size: 1.6em !important;
+  height: 10% !important;
+}
+
+.cantidad {
+  font-size: 1.3em;
+  margin-top: 30px !important;
+}
+
+.closeModal-detalle {
+  font-size: 1em !important;
+  background-color: #EE9D05;
+  border-radius: 10px;
+  margin-left: 150px !important;
+}
+
 /************  ESTILOS DE LA PAGINA DE PEDIDOS DEL MESERO  *****************/
 
 .menu-container {

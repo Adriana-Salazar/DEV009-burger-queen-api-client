@@ -6,6 +6,7 @@ import { faPlus, faMinus, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 
 
+
 interface Product {
   id: number;
   name: string;
@@ -19,7 +20,7 @@ interface OrderProps {
   token: string;
 }
 
-function calculateTotalWithQuantity(products: Product[], quantities: { [key: number]: number }) {
+export function calculateTotalWithQuantity(products: Product[], quantities: { [key: number]: number }) {
   let total = 0;
   for (const product of products) {
     total += product.price * quantities[product.id];
@@ -145,7 +146,7 @@ export function Order({ token }: OrderProps) {
         <button className="bebidas" onClick={() => setSelectedCategory('Beverages')}>Bebidas</button>
       </div>
       <div>
-        <input type="text" className="cliente" placeholder="Nombre del cliente"></input>
+        <input type="text" className="cliente" placeholder="Nombre del cliente" required></input>
       </div>
       <div className='productos'>
         {products
@@ -190,9 +191,9 @@ export function Order({ token }: OrderProps) {
           <p>Total: ${total}</p>
         </div>
       </div>
+      <button className='enviar'>Enviar Orden</button>
 
 
-      <div className='enviar'>Enviar Orden</div>
       {isModalVisible && (
         <div>
           <div className="modal-backdrop fade show"></div>
@@ -209,6 +210,7 @@ export function Order({ token }: OrderProps) {
                   <button type="button" className="btn btn-primary btn-x" onClick={handleAccept}>
                     Aceptar
                   </button>
+                  <p></p>
                 </div>
               </div>
             </div>

@@ -1,7 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faClock } from '@fortawesome/free-solid-svg-icons';
+
+// interfaces para definir la estructura de los objetos(TypeScript)
+interface WaiterProps {
+  token: string;
+  role: string;
+}
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  type: string;
+  dateEntry?: string | null;
+}
 
 interface Order {
   id: number;
@@ -9,13 +25,11 @@ interface Order {
   dataEntry: string;
   status: string;
   dateProcessed?: string | null;
+  products: { qty: number; product: Product }[];
 }
 
-interface WaiterProps {
-  token: string; // Asegúrate de recibir el token como prop
-}
 
-export function Waiter({ token }: WaiterProps) {
+export function Waiter({ token, role }: WaiterProps) {
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
@@ -40,12 +54,40 @@ export function Waiter({ token }: WaiterProps) {
     fetchOrders();
   }, [token]);
   return (
-    <TablaOrdenMesero orders={orders} />
+    <TablaOrdenMesero orders={orders} role={role} />
   );
 }
 
+function calculateTotalForSelectedOrder(selectedOrder: Order | null) {
+  if (!selectedOrder || !selectedOrder.products) {
+    return 0;
+  }
 
-export function TablaOrdenMesero({ orders }: { orders: Order[] }) {
+  return selectedOrder.products.reduce((total, product) => {
+    return total + (product.product.price * product.qty);
+  }, 0);
+}
+
+
+
+
+export function TablaOrdenMesero({ orders, role }: { orders: Order[], role: string }) {
+  // utiliza el hook useState para declarar un estado local
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+
+
+  const openModal = (order: Order) => {
+    setSelectedOrder(order);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
+
   console.log("Datos de órdenes:", orders);
   return (
     <>
@@ -56,6 +98,7 @@ export function TablaOrdenMesero({ orders }: { orders: Order[] }) {
               <th className='style text-center'>Cliente</th>
               <th className='style text-center'>Hora de pedido</th>
               <th className='style text-center'>Estado</th>
+              <th className='style text-center'>Detalle de pedido</th>
               <th className='style text-center'>Hora de entrega</th>
             </tr>
           </thead>
@@ -66,11 +109,22 @@ export function TablaOrdenMesero({ orders }: { orders: Order[] }) {
                   <td className='style2 text-center'>{order.client}</td>
                   <td className='style2 text-center'>{order.dataEntry}</td>
                   <td className='style2 text-center'>{order.status}</td>
+                  <td className='style2 text-center'><FontAwesomeIcon onClick={() => openModal(order)}
+                    icon={faEye} style={{ color: "#8f8f8f", }} /></td>
+
                   <td className='style2 text-center'>
                     {order.dateProcessed || "Aún no entregado"}
                   </td>
                   <td className='style2 text-center'>
-                    <FontAwesomeIcon icon={faTrash} style={{ color: "#000000" }} />
+                    {role === 'waiter' ? (
+                      <FontAwesomeIcon icon={faTrash} style={{ color: "#000000" }} />
+                    ) : role === 'chef' ? (
+                      order.status === 'pending' ? (
+                        <FontAwesomeIcon icon={faClock} style={{ color: "#000000" }} />
+                      ) : (
+                        <FontAwesomeIcon icon={faCheck} style={{ color: "#000000" }} />
+                      )
+                    ) : null}
                   </td>
                 </tr>
               ))
@@ -82,6 +136,51 @@ export function TablaOrdenMesero({ orders }: { orders: Order[] }) {
           </tbody>
         </table>
       </div>
+
+      {isModalVisible && selectedOrder && (
+        <div>
+          <div className="modal-backdrop fade show"></div>
+          <div className="modal d-block">
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-body">
+                  <h4>Detalle de Pedido</h4>
+
+                  <div className="detalle-ordenes-productos">
+                    {selectedOrder.products.map((product) => (
+                      <div className="detalle-producto-resumen" key={product.product.id}>
+                        <img
+                          className="detalle-img-ordenes-productos"
+                          src={product.product.image}
+                          alt="imagen"
+                        />
+                        <div className="detalle-contenedor-info-orden">
+                          <p className="detalle-name-product">{product.product.name}</p>
+                          <p className="cantidad">cantidad: {product.qty}</p>
+                        </div>
+                        <div className="detalle-price">
+                          <p className="detalle-price-p">${product.product.price * product.qty}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <p>Total: ${calculateTotalForSelectedOrder(selectedOrder)}</p>
+                  <button
+                    type="button"
+                    className="closeModal-detalle"
+                    data-bs-dismiss="modal"
+                    onClick={closeModal}
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
@@ -90,66 +189,3 @@ export function TablaOrdenMesero({ orders }: { orders: Order[] }) {
 
 
 
-// function sanitizeToken({ token }) {
-//   // Reemplazar caracteres no válidos con caracteres válidos
-//   return token.replace(/[^A-Za-z0-9+/]/g, '');
-// }
-
-
-// export function TablaOrdenMesero({ token }: { token: string }) {  
-//     const [data, setData] = useState([]);
-//     //const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQHN5c3RlcnMueHl6IiwiaWF0IjoxNjk3MDQyMjI5LCJleHAiOjE2OTcwNDU4MjksInN1YiI6IjEifQ.HP0UyylL1CrWbpEZ7KWpXwlpeiVPTcCt_GWvu8I2OyU'
-//     const sanitizedToken = sanitizeToken(token);
-//     const encodedToken = btoa(sanitizedToken);
-  
-//     useEffect(() => {
-//       // Realizar una solicitud GET a la API aquí
-//       fetch('https://burger-queen-mock-9l2y.onrender.com/orders', {
-//         method: 'GET',
-//         headers: {
-//           "Content-Type": "application/json",
-//           'Authorization':`Basic ${encodedToken}`,
-//         },     
-//       })
-//         .then((response) => response.json())
-//         .then((data) => {
-//           setData(data); // Almacenar los datos de la API en el estado
-//         })
-//         .catch((error) => {
-//           console.error('Error al obtener los datos de la API:', error);
-//         });
-//     }, []);
-  
-//     return (
-//       <>
-//         <div className='table-responsive'>
-//           <table className="estilos table table-striped mx-auto">
-//             <thead>
-//               <tr>
-//                 <th className='style text-center'>N° Orden</th>
-//                 <th className='style text-center'>Cliente</th>
-//                 <th className='style text-center'>Hora de pedido</th>
-//                 <th className='style text-center'>Estado</th>
-//                 <th className='style text-center'>Hora de entrega</th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {Array.isArray(data) &&
-//                 data.map((item, index) => (
-//                   <tr key={index}>
-//                     <td className='style2 text-center'>{item.numeroOrden}</td>
-//                     <td className='style2 text-center'>{item.cliente}</td>
-//                     <td className='style2 text-center'>{item.horaPedido}</td>
-//                     <td className='style2 text-center'>{item.estado}</td>
-//                     <td className='style2 text-center'>{item.horaEntrega}</td>
-//                     <td className='style2 text-center'>
-//                       <FontAwesomeIcon icon={faTrash} style={{ color: "#000000" }} />
-//                     </td>
-//                   </tr>
-//                 ))}
-//             </tbody>
-//           </table>
-//         </div>
-//       </>
-//     );
-// }
