@@ -15,8 +15,7 @@ interface Product {
   name: string;
   price: number;
   image: string;
-  type: string;
-  dateEntry?: string | null;
+  type: string;  
 }
 
 interface Order {
@@ -103,7 +102,7 @@ export function TablaOrdenMesero({ orders, role }: { orders: Order[], role: stri
             </tr>
           </thead>
           <tbody>
-            {orders ? (
+            {orders ? (      
               orders.map((order) => (
                 <tr key={order.id}>
                   <td className='style2 text-center'>{order.client}</td>

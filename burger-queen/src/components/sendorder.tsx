@@ -1,4 +1,6 @@
 export async function enviarOrdenALaAPI(token, userId, client, selectedProducts, cantidadProductos, total, orderCounter, setOrderCounter, setUserId) {
+  const currentDate = new Date();
+  const formattedDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')} ${String(currentDate.getHours()).padStart(2, '0')}:${String(currentDate.getMinutes()).padStart(2, '0')}:${String(currentDate.getSeconds()).padStart(2, '0')}`;
     // Crear los datos de la orden
     const orderData = {
       userId, // Utiliza el userId actual
@@ -9,11 +11,11 @@ export async function enviarOrdenALaAPI(token, userId, client, selectedProducts,
           id: product.id,
           name: product.name,
           price: product.price,
-          image: product.image,
+          image: product.image,          
         },
       })),
       status: 'pending',
-      dateEntry: new Date().toISOString(),
+      dataEntry: formattedDate,
       total, // Agregamos el total de la orden.
     };
   
