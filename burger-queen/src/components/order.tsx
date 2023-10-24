@@ -146,7 +146,14 @@ export function Order({ token }: OrderProps) {
         <button className="bebidas" onClick={() => setSelectedCategory('Beverages')}>Bebidas</button>
       </div>
       <div>
-        <input type="text" className="cliente" placeholder="Nombre del cliente" required></input>
+      <input
+        type="text"
+        className="cliente"
+        placeholder="Nombre del cliente"
+        required
+        value={client}
+        onChange={(e) => setClient(e.target.value)}
+      />
       </div>
       <div className='productos'>
         {products
