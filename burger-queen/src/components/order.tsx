@@ -3,8 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTrash } from '@fortawesome/free-solid-svg-icons';
-
-
+import { enviarOrdenALaAPI } from '../components/sendorder';
 
 
 interface Product {
@@ -28,17 +27,17 @@ export function calculateTotalWithQuantity(products: Product[], quantities: { [k
   return total;
 }
 
-
-
 export function Order({ token }: OrderProps) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
   const [productAdded, setProductAdded] = useState<{ [key: number]: boolean }>({});
+  const [products, setProducts] = useState<Product[]>([]);
   const [cantidadProductos, setCantidadProductos] = useState<{ [key: number]: number }>({});
   const [total, setTotal] = useState(() => calculateTotalWithQuantity(selectedProducts, cantidadProductos));
-
-
+  const [client, setClient] = useState(''); // Agrega un estado para el cliente
+  const [orderCounter, setOrderCounter] = useState(1);
+  const [userId, setUserId] = useState(orderCounter); // Inicializamos el userId con el valor actual del contador
 
   const openModal = () => {
     console.log('Abriendo el modal');
@@ -56,8 +55,9 @@ export function Order({ token }: OrderProps) {
     navigateTo('/waiter', { state: { token } });
   };
 
-  const [products, setProducts] = useState<Product[]>([]);
-
+  const handleEnviarOrdenClick = () => {
+    enviarOrdenALaAPI(token, userId, client, selectedProducts, cantidadProductos, total, orderCounter, setOrderCounter, setUserId);
+  };
 
   useEffect(() => {
     async function fetchProducts() {
@@ -191,7 +191,9 @@ export function Order({ token }: OrderProps) {
           <p>Total: ${total}</p>
         </div>
       </div>
-      <button className='enviar'>Enviar Orden</button>
+      <button className='enviar' onClick={handleEnviarOrdenClick}>
+        Enviar Orden
+      </button>
 
 
       {isModalVisible && (
