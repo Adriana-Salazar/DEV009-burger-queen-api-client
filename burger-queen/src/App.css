@@ -273,13 +273,14 @@ body {
   font-size: 1.6em;
 }
 
+
 .detalle-price-p {
   font-size: 1.6em;
   margin-top: 20px;
-  margin-left: 65px;
+  margin-left: 50px;
 }
 
-.modal-footer {
+.modal-waiter {
   background-color: #facf86 !important;
   font-size: 1.6em !important;
   height: 10% !important;
