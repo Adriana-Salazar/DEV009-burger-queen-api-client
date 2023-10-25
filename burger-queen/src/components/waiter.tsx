@@ -15,7 +15,7 @@ interface Product {
   name: string;
   price: number;
   image: string;
-  type: string;  
+  type: string;
 }
 
 interface Order {
@@ -102,7 +102,7 @@ export function TablaOrdenMesero({ orders, role }: { orders: Order[], role: stri
             </tr>
           </thead>
           <tbody>
-            {orders ? (      
+            {orders ? (
               orders.map((order) => (
                 <tr key={order.id}>
                   <td className='style2 text-center'>{order.client}</td>
@@ -157,14 +157,14 @@ export function TablaOrdenMesero({ orders, role }: { orders: Order[], role: stri
                           <p className="detalle-name-product">{product.product.name}</p>
                           <p className="cantidad">cantidad: {product.qty}</p>
                         </div>
-                        <div className="detalle-price">
+                        <div className="detalle-price ">
                           <p className="detalle-price-p">${product.product.price * product.qty}</p>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="modal-footer">
+                <div className="modal-footer modal-waiter">
                   <p>Total: ${calculateTotalForSelectedOrder(selectedOrder)}</p>
                   <button
                     type="button"
