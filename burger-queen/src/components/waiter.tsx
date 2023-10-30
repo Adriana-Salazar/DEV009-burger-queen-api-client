@@ -4,6 +4,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
 import { faCheck, faClock } from '@fortawesome/free-solid-svg-icons';
 
+
+import { ReactMouseEvent } from 'react';
+
+
 // interfaces para definir la estructura de los objetos(TypeScript)
 interface WaiterProps {
   token: string;
@@ -52,8 +56,40 @@ export function Waiter({ token, role }: WaiterProps) {
 
     fetchOrders();
   }, [token]);
+
+
+  const handleStatusChange = async (event: ReactMouseEvent<HTMLElement>) => {
+    const orderId = event.currentTarget.getAttribute("data-orderid");
+
+    try {
+      const response = await fetch(`https://burger-queen-mock-9l2y.onrender.com/orders/${orderId}`, {
+        method: "PATCH",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: "delivered" }),
+      });
+
+      if (!response.ok) {
+        throw new Error("La solicitud PATCH no fue exitosa");
+      }
+
+      const updatedOrders = orders.map((order) => {
+        if (order.id === orderId) {
+          order.status = "delivered";
+        }
+        return order;
+      });
+      setOrders(updatedOrders);
+    } catch (error) {
+      console.error("Error al cambiar el estado de la orden:", error);
+    }
+  };
+
+
   return (
-    <TablaOrdenMesero orders={orders} role={role} />
+    <TablaOrdenMesero orders={orders} role={role} handleStatusChange={handleStatusChange} />
   );
 }
 
@@ -70,8 +106,7 @@ function calculateTotalForSelectedOrder(selectedOrder: Order | null) {
 
 
 
-export function TablaOrdenMesero({ orders, role }: { orders: Order[], role: string }) {
-  // utiliza el hook useState para declarar un estado local
+export function TablaOrdenMesero({ orders, role, handleStatusChange }: { orders: Order[], role: string, handleStatusChange: (event: ReactMouseEvent<HTMLElement>) => Promise<void> }) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
@@ -119,7 +154,8 @@ export function TablaOrdenMesero({ orders, role }: { orders: Order[], role: stri
                       <FontAwesomeIcon icon={faTrash} style={{ color: "#000000" }} />
                     ) : role === 'chef' ? (
                       order.status === 'pending' ? (
-                        <FontAwesomeIcon icon={faClock} style={{ color: "#000000" }} />
+                        <FontAwesomeIcon icon={faClock} style={{ color: "#000000" }} data-orderid={order.id}
+                          onClick={handleStatusChange} />
                       ) : (
                         <FontAwesomeIcon icon={faCheck} style={{ color: "#000000" }} />
                       )
