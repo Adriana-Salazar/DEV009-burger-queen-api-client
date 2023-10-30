@@ -39,6 +39,10 @@ export function Order({ token }: OrderProps) {
   const [orderCounter, setOrderCounter] = useState(1);
   const [userId, setUserId] = useState(orderCounter); // Inicializamos el userId con el valor actual del contador
 
+  const [twoModal, setTwoModal] = useState(false);
+  const [threeModal, setThreeModal] = useState(false);
+
+
   const openModal = () => {
     console.log('Abriendo el modal');
     setModalVisible(true);
@@ -58,6 +62,26 @@ export function Order({ token }: OrderProps) {
   const handleEnviarOrdenClick = () => {
     enviarOrdenALaAPI(token, userId, client, selectedProducts, cantidadProductos, total, orderCounter, setOrderCounter, setUserId);
   };
+
+  const openModalTwo = () => {
+    setTwoModal(true);
+  }
+
+  const closeModalTwo = () => {
+    setTwoModal(false);
+  }
+
+  const openModalThree = () => {
+    setTwoModal(false);
+    setThreeModal(true);
+  }
+
+  const closeModalThree = () => {
+    setClient(''); // Limpia el nombre del cliente
+    setSelectedProducts([]); // Limpia la lista de productos seleccionados
+    setProductAdded({});
+    setThreeModal(false);
+  }
 
   useEffect(() => {
     async function fetchProducts() {
@@ -146,14 +170,14 @@ export function Order({ token }: OrderProps) {
         <button className="bebidas" onClick={() => setSelectedCategory('Beverages')}>Bebidas</button>
       </div>
       <div>
-      <input
-        type="text"
-        className="cliente"
-        placeholder="Nombre del cliente"
-        required
-        value={client}
-        onChange={(e) => setClient(e.target.value)}
-      />
+        <input
+          type="text"
+          className="cliente"
+          placeholder="Nombre del cliente"
+          required
+          value={client}
+          onChange={(e) => setClient(e.target.value)}
+        />
       </div>
       <div className='productos'>
         {products
@@ -198,7 +222,7 @@ export function Order({ token }: OrderProps) {
           <p>Total: ${total}</p>
         </div>
       </div>
-      <button className='enviar' onClick={handleEnviarOrdenClick}>
+      <button className='enviar' onClick={openModalTwo}>
         Enviar Orden
       </button>
 
@@ -218,6 +242,58 @@ export function Order({ token }: OrderProps) {
                   </button>
                   <button type="button" className="btn btn-primary btn-x" onClick={handleAccept}>
                     Aceptar
+                  </button>
+                  <p></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {twoModal && (
+        <div>
+          <div className="modal-backdrop fade show"></div>
+          <div className="modal d-block">
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-body">
+                  <p className='text-de-X'>¿La orden está completa?</p>
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary btn-x" data-bs-dismiss="modal" onClick={closeModalTwo}>
+                    No
+                  </button>
+                  <button type="button" className="btn btn-primary btn-x" onClick={() => {
+                    handleEnviarOrdenClick();
+                    openModalThree();
+                  }}>
+                    Sí
+                  </button>
+                  <p></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {threeModal && (
+        <div>
+          <div className="modal-backdrop fade show"></div>
+          <div className="modal d-block">
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-body">
+                  <p className='text-de-X'>Orden enviada al chef!!</p>
+                  <p className='text-de-X'>¿Desea tomar otra orden?</p>
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary btn-x" data-bs-dismiss="modal" onClick={handleAccept}>
+                    No
+                  </button>
+                  <button type="button" className="btn btn-primary btn-x" onClick={closeModalThree}>
+                    Sí
                   </button>
                   <p></p>
                 </div>
