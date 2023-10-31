@@ -60,24 +60,29 @@ export function Waiter({ token, role }: WaiterProps) {
 
   const handleStatusChange = async (event: ReactMouseEvent<HTMLElement>) => {
     const orderId = event.currentTarget.getAttribute("data-orderid");
-
+  
     try {
+      const currentDate = new Date();
+      const formattedDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')} ${String(currentDate.getHours()).padStart(2, '0')}:${String(currentDate.getMinutes()).padStart(2, '0')}:${String(currentDate.getSeconds()).padStart(2, '0')}`;
+      const deliveryDate = formattedDate; // Captura la fecha y hora de entrega antes de cambiar el estado de la orden
+      
       const response = await fetch(`https://burger-queen-mock-9l2y.onrender.com/orders/${orderId}`, {
         method: "PATCH",
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ status: "delivered" }),
+        body: JSON.stringify({ status: "delivered", dateProcessed: deliveryDate }),
       });
-
+  
       if (!response.ok) {
         throw new Error("La solicitud PATCH no fue exitosa");
       }
-
+  
       const updatedOrders = orders.map((order) => {
         if (order.id === orderId) {
           order.status = "delivered";
+          order.dateProcessed = deliveryDate; // Actualiza la hora de entrega en la orden
         }
         return order;
       });
@@ -86,6 +91,7 @@ export function Waiter({ token, role }: WaiterProps) {
       console.error("Error al cambiar el estado de la orden:", error);
     }
   };
+  
 
 
   return (
