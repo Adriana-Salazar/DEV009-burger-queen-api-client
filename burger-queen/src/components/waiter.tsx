@@ -56,7 +56,7 @@ export function Waiter({ token, role }: WaiterProps) {
 
 
   const handleStatusChange = async (event: ReactMouseEvent<HTMLElement>) => {
-    const orderId = event.currentTarget.getAttribute("data-orderid");  
+    const orderId = event.currentTarget.getAttribute("data-orderid");
     try {
       const currentDate = new Date();
       const formattedDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')} ${String(currentDate.getHours()).padStart(2, '0')}:${String(currentDate.getMinutes()).padStart(2, '0')}:${String(currentDate.getSeconds()).padStart(2, '0')}`;
@@ -68,11 +68,11 @@ export function Waiter({ token, role }: WaiterProps) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ status: "delivered", dateProcessed: deliveryDate }),
-      });  
+      });
       if (!response.ok) {
         throw new Error("La solicitud PATCH no fue exitosa");
       }
-  
+
       const updatedOrders = orders.map((order) => {
         if (order.id === orderId) {
           order.status = "delivered";
@@ -81,6 +81,8 @@ export function Waiter({ token, role }: WaiterProps) {
         return order;
       });
       setOrders(updatedOrders);
+      window.location.reload();
+
     } catch (error) {
       console.error("Error al cambiar el estado de la orden:", error);
     }
@@ -99,9 +101,41 @@ function calculateTotalForSelectedOrder(selectedOrder: Order | null) {
   }, 0);
 }
 
-export function TablaOrdenMesero({ orders, role, token, handleStatusChange }: { orders: Order[], role: string, handleStatusChange: (event: ReactMouseEvent<HTMLElement>) => Promise<void> }) {
+export function TablaOrdenMesero({ orders, role, token, handleStatusChange }: { orders: Order[], role: string, token: string, handleStatusChange: (event: ReactMouseEvent<HTMLElement>) => Promise<void> }) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+  const [isModalDelete, setModalDelete] = useState(false);
+  const [orderIdToDelete, setOrderIdToDelete] = useState<number | null>(null);
+
+
+
+  const openModalDelete = (orderId: number) => {
+    setOrderIdToDelete(orderId);
+    setModalDelete(true);
+  };
+
+  const closeModalDelete = () => {
+    setOrderIdToDelete(null);
+    setModalDelete(false);
+  };
+
+  const handleDeleteOrder = () => {
+    if (orderIdToDelete !== null) {
+      deleteOrden(orderIdToDelete, token)
+        .then(() => {
+          closeModalDelete();
+          window.location.reload();
+        })
+        .catch((error) => {
+          console.error('Error al eliminar la orden:', error);
+        });
+    }
+  };
+
+
+
+
   const openModal = (order: Order) => {
     setSelectedOrder(order);
     setModalVisible(true);
@@ -138,8 +172,13 @@ export function TablaOrdenMesero({ orders, role, token, handleStatusChange }: { 
                   </td>
                   <td className='style2 text-center'>
                     {role === 'waiter' ? (
-                      <FontAwesomeIcon icon={faTrash} style={{ color: "#000000" }} data-orderid={order.id}
-                        onClick={() => deleteOrden(order.id, token)} />
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        style={{ color: "#000000" }}
+                        data-orderid={order.id}
+                        onClick={() => openModalDelete(order.id)}
+                      />
+
                     ) : role === 'chef' ? (
                       order.status === 'pending' ? (
                         <FontAwesomeIcon icon={faClock} style={{ color: "#000000" }} data-orderid={order.id}
@@ -202,6 +241,38 @@ export function TablaOrdenMesero({ orders, role, token, handleStatusChange }: { 
           </div>
         </div>
       )}
+
+
+
+      {isModalDelete && (
+        <div>
+          <div className="modal-backdrop fade show"></div>
+          <div className="modal d-block">
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-body">
+                  <p className='text-de-X'>¿Estás seguro que quieres borrar la orden?</p>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-x"
+                    data-bs-dismiss="modal"
+                    onClick={handleDeleteOrder}
+                  >
+                    Si
+                  </button>
+                  <button type="button" className="btn btn-primary btn-x" onClick={closeModalDelete}>
+                    No
+                  </button>
+                  <p></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </>
   );
 }
