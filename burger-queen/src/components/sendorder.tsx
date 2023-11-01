@@ -19,9 +19,11 @@ export async function enviarOrdenALaAPI(
   setUserId: (userId: number) => void) {
   const currentDate = new Date();
   const formattedDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')} ${String(currentDate.getHours()).padStart(2, '0')}:${String(currentDate.getMinutes()).padStart(2, '0')}:${String(currentDate.getSeconds()).padStart(2, '0')}`;
+  const updatedUserId = userId + 2;
+
   // Crear los datos de la orden
   const orderData = {
-    userId, // Utiliza el userId actual
+    userId: updatedUserId,
     client,
     products: selectedProducts.map((product) => ({
       qty: cantidadProductos[product.id],
@@ -47,15 +49,12 @@ export async function enviarOrdenALaAPI(
       },
       body: JSON.stringify(orderData),
     });
-
     if (!response.ok) {
       throw new Error('La solicitud no fue exitosa');
     }
 
     const data = await response.json();
-    console.log('Orden creada:', data);
-    // Realiza acciones adicionales si es necesario, como limpiar el carrito de productos.
-
+    console.log('Orden creada:', data);   
     // Actualizamos el contador y el userId para el siguiente pedido
     setOrderCounter(orderCounter + 1);
     setUserId(orderCounter + 1);
