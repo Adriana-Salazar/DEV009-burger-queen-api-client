@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import imgerror404 from '../img/imgerror404.png'
-import "bootstrap/dist/css/bootstrap.min.css";
 
 export function BackgroundImage() {
   return (
@@ -79,7 +77,7 @@ export function Error404() {
   return (
     <>
       <div className='conteinererror404'>
-        <img src={imgerror404} alt="imagen_de_error" className="imgerror404" />
+        <img src="https://static.vecteezy.com/system/resources/previews/008/873/497/non_2x/cute-sad-and-crying-hamburger-character-hand-drawn-cartoon-kawaii-character-illustration-icon-isolated-on-white-background-hamburger-character-concept-vector.jpg" alt="imagen_de_error" className="imgerror404" />
         <h2 className='msgerror404'>Pagina no encontrada</h2>
       </div>
     </>
