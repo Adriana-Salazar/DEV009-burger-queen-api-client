@@ -203,7 +203,7 @@ export function TablaOrdenMesero({ orders, role, token, handleStatusChange }: { 
           <div className="modal-backdrop fade show"></div>
           <div className="modal d-block">
             <div className="modal-dialog modal-dialog-centered">
-              <div className="modal-content">
+              <div className="modal-content style-modal">
                 <div className="modal-body">
                   <h4>Detalle de Pedido</h4>
                   <div className="detalle-ordenes-productos">
